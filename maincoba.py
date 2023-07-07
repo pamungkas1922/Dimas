@@ -15,7 +15,7 @@ stocks = ["BBCA.JK", "BBRI.JK", "BYAN.JK", "BMRI.JK", "TLKM.JK"]
 selected_stock = st.sidebar.selectbox("Pilih stok", stocks)
 
 START = st.sidebar.date_input("Mulai Dari", datetime.date(2023, 6,21))
-END = st.sidebar.date_input("Mulai Dari", datetime.date(2023, 6,27))
+END = st.sidebar.date_input("Mulai Dari", datetime.date(2023, 6,29))
 
 # n_weeks = st.sidebar.slider("Prediksi berapa minggu", 1, 4)
 period = 7
