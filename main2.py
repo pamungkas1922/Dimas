@@ -60,7 +60,7 @@ if st.sidebar.button('Prediksi'):
     hasil = hasil.rename(columns={'ds': 'tanggal_mendatang', 'value': 'prediksi'})
     
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=data['ds'], y=data['y'], name="Actual Data", line_color='blue'))
+    fig.add_trace(go.Scatter(x=data['ds'], y=data['y'], name="Data Asli", line_color='blue'))
     fig.add_trace(go.Scatter(x=hasil['tanggal_mendatang'], y=hasil['prediksi'], name="Hasil Prediksi", line_color='lightblue'))
     fig.update_layout(title_text="Time series data with Prediction", xaxis_rangeslider_visible=True)
     st.plotly_chart(fig)
