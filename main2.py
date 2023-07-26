@@ -28,14 +28,12 @@ def login():
     return False
 
 # Check if the user is logged in
-if "is_logged_in" not in st.session_state:
-    st.session_state.is_logged_in = False
+logged_in = login()
 
-if not st.session_state.is_logged_in:
-    if login():
-        st.session_state.is_logged_in = True
-    else:
-        st.stop()  # Stop the app if not logged in
+if not logged_in:
+    st.stop()  # Stop the app if not logged in
+
+# Continue with the rest of the application code for the logged-in user
 
 st.title("prediksi harga saham teratas indonesia")
 st.sidebar.subheader("PREDIKSI HARGA SAHAM")
