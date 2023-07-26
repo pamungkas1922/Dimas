@@ -8,8 +8,8 @@ import datetime
 import numpy as np
 
 # Define the correct username and password
-CORRECT_USERNAME = "admin_user"
-CORRECT_PASSWORD = "admin_user"
+CORRECT_USERNAME = "your_username"
+CORRECT_PASSWORD = "your_password"
 
 # Create a login function
 def login():
@@ -17,7 +17,9 @@ def login():
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
 
-    if st.button("Login"):
+    submitted = st.button("Submit")
+
+    if submitted:
         if username == CORRECT_USERNAME and password == CORRECT_PASSWORD:
             st.success("Logged in as {}".format(username))
             return True
@@ -25,9 +27,28 @@ def login():
             st.error("Incorrect username or password")
     return False
 
+# Check if the user is logged in using SessionState
+def is_authenticated():
+    session_state = SessionState.get(username="", logged_in=False)
+    return session_state.logged_in
+
+# Create SessionState class
+class SessionState:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    def get(*args):
+        if not hasattr(SessionState, "_instance"):
+            SessionState._instance = SessionState(**dict(*args))
+        return SessionState._instance
+
 # Check if the user is logged in
-if not login():
-    st.stop()  # Stop the app if not logged in
+if not is_authenticated():
+    if login():
+        # If login successful, set session state to indicate user is logged in
+        session_state = SessionState.get(logged_in=True)
+    else:
+        st.stop()  # Stop the app if not logged in
 
 st.title("prediksi harga saham teratas indonesia")
 st.sidebar.subheader("PREDIKSI HARGA SAHAM")
