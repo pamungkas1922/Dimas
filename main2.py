@@ -27,26 +27,13 @@ def login():
             st.error("Incorrect username or password")
     return False
 
-# Check if the user is logged in using SessionState
-def is_authenticated():
-    session_state = SessionState.get(username="", logged_in=False)
-    return session_state.logged_in
-
-# Create SessionState class
-class SessionState:
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
-    def get(*args):
-        if not hasattr(SessionState, "_instance"):
-            SessionState._instance = SessionState(**dict(*args))
-        return SessionState._instance
-
 # Check if the user is logged in
-if not is_authenticated():
+if "is_logged_in" not in st.session_state:
+    st.session_state.is_logged_in = False
+
+if not st.session_state.is_logged_in:
     if login():
-        # If login successful, set session state to indicate user is logged in
-        session_state = SessionState.get(logged_in=True)
+        st.session_state.is_logged_in = True
     else:
         st.stop()  # Stop the app if not logged in
 
