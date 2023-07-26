@@ -8,8 +8,8 @@ import datetime
 import numpy as np
 
 # Define the correct username and password
-CORRECT_USERNAME = "admin"
-CORRECT_PASSWORD = "admin"
+CORRECT_USERNAME = "your_username"
+CORRECT_PASSWORD = "your_password"
 
 # Create a login function
 def login():
@@ -85,11 +85,9 @@ if st.sidebar.button('Prediksi'):
     hasil = hasil.drop('col', axis=1)
     hasil = hasil.rename(columns={'ds': 'tanggal_mendatang', 'value': 'prediksi'})
     
-    fig2 = go.Figure()
-    fig2.add_trace(go.Scatter(x=hasil['tanggal_mendatang'], y=hasil['prediksi'], name="Hasil Prediksi", line_color='lightblue'))
-    fig2.layout.update(title_text="Hasil Prediksi", xaxis_rangeslider_visible=True)
-    st.plotly_chart(fig2)
-    
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=hasil['tanggal_mendatang'], y=hasil['prediksi'], name="Hasil Prediksi", line_color='lightblue'))
+    st.plotly_chart(fig)
     st.dataframe(hasil, height=247, width=800)
 
     y_test = test_data['y']
