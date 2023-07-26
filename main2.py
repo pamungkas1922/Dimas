@@ -53,40 +53,41 @@ def main():
     st.subheader("stock data")
     st.write(data.tail())
 
-    # Plot stock data
+    # Plot stock data and predictions
     fig1 = go.Figure()
-    fig1.add_trace(go.Scatter(x=data["Date"], y=data['Close'], name="stock_open"))
-    fig1.layout.update(title_text="Time series data", xaxis_rangeslider_visible=True)
-    st.plotly_chart(fig1)
+
+    # Plot actual stock data
+    fig1.add_trace(go.Scatter(x=data["Date"], y=data['Close'], name="Actual Stock Price", line_color='blue'))
 
     if st.sidebar.button('Prediksi'):
         # predict future prices
-        data = data[["Date", "Close"]]
-        data= data.rename(columns={"Date": "ds", "Close": "y"})
+        data_for_pred = data[["Date", "Close"]]
+        data_for_pred = data_for_pred.rename(columns={"Date": "ds", "Close": "y"})
 
         test_days = 50
-        train_data = data[:-test_days]
-        test_data = data[-test_days:]
+        train_data = data_for_pred[:-test_days]
+        test_data = data_for_pred[-test_days:]
 
         model = NeuralProphet(n_forecasts=period)
-        model.fit(data)
+        model.fit(train_data)
 
-        st.subheader('Hasil Prediksi')
-
-        future = model.make_future_dataframe(data, periods=7, n_historic_predictions=len(data))
+        # Predict future prices
+        future = model.make_future_dataframe(train_data, periods=test_days + period, n_historic_predictions=len(train_data))
         forecast = model.predict(future)
         forecast['ds'] = pd.to_datetime(forecast['ds'], format='%Y-%m-%d')
 
-        data_stacked = forecast.set_index('ds').stack().reset_index()
-        data_stacked.columns = ['ds', 'col',  'value']
-        hasil = data_stacked.loc[(data_stacked['col'].str.contains('yhat')) & (~data_stacked['value'].isnull())]
-        hasil = hasil.drop('col', axis=1)
-        hasil = hasil.rename(columns={'ds': 'tanggal_mendatang', 'value': 'prediksi'})
+        # Plot predicted stock prices
+        fig1.add_trace(go.Scatter(x=forecast['ds'], y=forecast['yhat1'], name="Predicted Stock Price", line_color='red'))
 
-        fig = go.Figure()
-        fig.add_trace(go.Scatter(x=hasil['tanggal_mendatang'], y=hasil['prediksi'], name="Hasil Prediksi", line_color='lightblue'))
-        st.plotly_chart(fig)
-        st.dataframe(hasil, height=247, width=800)
+    fig1.layout.update(title_text="Time series data and Predictions", xaxis_rangeslider_visible=True)
+    st.plotly_chart(fig1)
+
+    # Display the predicted values in a table
+    if 'forecast' in locals():
+        st.subheader('Hasil Prediksi')
+        hasil = forecast[['ds', 'yhat1']].iloc[-period:]
+        hasil.columns = ['tanggal_mendatang', 'prediksi']
+        st.dataframe(hasil)
 
         y_test = test_data['y']
         y_pred = forecast['yhat1'].iloc[-test_days:]
