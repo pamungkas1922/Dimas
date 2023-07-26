@@ -8,7 +8,7 @@ import datetime
 import numpy as np
 
 # Define the login credentials
-LOGIN_CREDENTIALS = {"username": "123456", "password": "123456"}
+LOGIN_CREDENTIALS = {"username": "user", "password": "user"}
 
 def authenticate(username, password):
     return username == LOGIN_CREDENTIALS["username"] and password == LOGIN_CREDENTIALS["password"]
